@@ -12,6 +12,7 @@
 #include <fstream>
 #include <limits>
 #include <cstdio>
+#include <ctime>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -59,6 +60,8 @@ void enableEcho();
 unsigned c_rand();
 
 int main() {
+    srand(time(NULL));
+
     unsigned choice;
 
     cout << Tcolors::BOLDGREEN << "Welcome to the student management system!" << Tcolors::RESET << endl;
@@ -268,22 +271,41 @@ void betterCin(string __Prompt, T& __Return_Buffer, string __Error_Message, bool
 }
 
 // disableEcho() disables writing to the terminal
+#ifdef _WIN32
 void disableEcho() {
     HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
     DWORD mode;
     GetConsoleMode(hStdin, &mode);
     SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
 }
+#else
+void disableEcho() {
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
+    tty.c_lflag &= ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+}
+#endif
 
 // enableEcho() enables writing to the terminal
+#ifdef _WIN32
 void enableEcho() {
     HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
     DWORD mode;
     GetConsoleMode(hStdin, &mode);
     SetConsoleMode(hStdin, mode | ENABLE_ECHO_INPUT);
 }
+#else
+void enableEcho() {
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
+    tty.c_lflag |= ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+}
+#endif
 
 // crand() returns a random unsigned integer
+#ifdef _WIN32
 unsigned c_rand() {
     unsigned r, v;
     rand_s(&r);
@@ -295,3 +317,14 @@ unsigned c_rand() {
 
     return v;
 }
+#else
+unsigned c_rand() {
+    unsigned r = (unsigned)rand() % 127;
+
+    if (!(r >= 48 && r <= 57) && !(r >= 65 && r <= 90) && !(r >= 97 && r <= 122)) {
+        r = c_rand();
+    }
+
+    return r;
+}
+#endif
