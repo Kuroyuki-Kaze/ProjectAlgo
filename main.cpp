@@ -22,9 +22,6 @@
 #endif
 
 //testing for pull request
-//test pull request
-
-
 
 using namespace std;
 
