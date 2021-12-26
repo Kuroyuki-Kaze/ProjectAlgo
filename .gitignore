@@ -33,3 +33,6 @@
 
 # .vscode files
 .vscode/*
+
+# user files
+users.txt
