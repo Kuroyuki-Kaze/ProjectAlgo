@@ -464,3 +464,4 @@ unsigned c_rand() {
 
     return r;
 }
+#endif
