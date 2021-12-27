@@ -270,6 +270,12 @@ struct HashTable {
 template <>
 void HashTable<Student>::insert(Student data) {
     unsigned index = hash(data.getID());
+    
+    if (table[index].search(data.getID()) != nullptr) {
+        cout << "Student already exists." << endl;
+        return;
+    }
+    
     Node<Student>* node = new Node<Student>;
     node->data = data;
     node->next = nullptr;
