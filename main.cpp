@@ -275,7 +275,7 @@ void HashTable<Student>::insert(Student data) {
         cout << "Student already exists." << endl;
         return;
     }
-    
+
     Node<Student>* node = new Node<Student>;
     node->data = data;
     node->next = nullptr;
@@ -819,6 +819,7 @@ int main() {
 
                             break;
                         }
+                        // TODO: add choice for viewing all students' information, and another choice for viewing all students' information sorted by GPA
                         else {
                             cout << Tcolors::RED << "Error: Invalid choice. Please try again." << Tcolors::RESET << endl;
                             cout << endl;
