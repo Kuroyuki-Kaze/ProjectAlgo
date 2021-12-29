@@ -182,6 +182,18 @@ struct Node {
     T data;
     Node<T>* next;
     Node<T>* prev;
+
+    Node(T data) {
+        this->data = data;
+        this->next = nullptr;
+        this->prev = nullptr;
+    }
+
+    Node() {
+        this->data = T();
+        this->next = nullptr;
+        this->prev = nullptr;
+    }
 };
 
 template <class T>
@@ -253,7 +265,7 @@ struct List {
         }
     }
 
-    void remove(Node<T>* node) {
+    void remove(Node<T> *node) {
         if (node == head) {
             head = head->next;
             head->prev = nullptr;
@@ -269,6 +281,8 @@ struct List {
         delete node;
         size--;
     }
+
+    void remove(string id);
 
     Node<T> *search(string id) {
         Node<T> *curr = head;
@@ -307,9 +321,37 @@ Node<Student> *List<Student>::search(string id) {
     return nullptr;
 }
 
+template <>
+void List<Student>::remove(string id) {
+    Node<Student> *before = nullptr;
+    Node<Student> *curr = head;
+
+    while (curr != nullptr) {
+        if (curr->data.getID() == id) {
+            if (before == nullptr && curr->next == nullptr) {
+                head = nullptr;
+                tail = nullptr;
+            }
+            else if (before == nullptr) {
+                head = curr->next;
+                head->prev = nullptr;
+            }
+            else {
+                before->next = curr->next;
+                curr->next->prev = before;
+            }
+            delete curr;
+            size--;
+            return;
+        }
+        before = curr;
+        curr = curr->next;
+    }
+}
+
 template <class T>
 struct HashTable {
-    List<T>* table;
+    List<T> *table;
     int size;
 
     HashTable(int size) {
@@ -327,12 +369,17 @@ struct HashTable {
     
     void insert(T data);
     void remove(string key);
+    void remove(Node<T> *node);
     Node<T>* search(string key);
     void print();
 
     void writeToFile(string filename);
     void readFromFile(string filename);
     void clear();
+
+    Node<T> *find(unsigned index) {
+        return table[index].head;
+    }
 };
 
 template <>
@@ -355,12 +402,14 @@ void HashTable<Student>::insert(Student data) {
 template <>
 Node<Student>* HashTable<Student>::search(string key) {
     unsigned index = hash(key);
-    Node<Student> *node = table[index].head;
+    Node<Student> *node = this->find(index);
 
     while (node != nullptr) {
         if (node->data.getID() == key) {
             return node;
         }
+
+        node = node->next;
     }
 
     return nullptr;
@@ -372,7 +421,7 @@ void HashTable<Student>::remove(string key) {
     Node<Student>* node = table[index].search(key);
 
     if (node != nullptr) {
-        table[index].remove(node);
+        table[index].remove(key);
     }
 }
 
@@ -388,6 +437,8 @@ void HashTable<Student>::print() {
             curr->data.print_data();
             curr = curr->next;
         }
+
+        cout << "Index: " << i << endl;
     }
 }
 
@@ -409,6 +460,10 @@ void HashTable<Student>::writeToFile(string filename) {
 
         Node<Student> *curr = table[i].head;
         while (curr != nullptr) {
+            if (curr->data.term_scores.size() == 0) {
+                file << curr->data.getID() << "," << curr->data.name << "," << curr->data.g << "," << "-1,-1\n";
+            }
+
             for (pair<int, vector<float>> p : curr->data.term_scores) {
                 for (float score : p.second) {
                     file << curr->data.getID() << "," << curr->data.name << "," << curr->data.g << "," << p.first << "," << score << "\n";
@@ -445,7 +500,7 @@ void HashTable<Student>::readFromFile(string filename) {
 
     int lastTerm = numeric_limits<int>::min();
     string lastID;
-    
+
     while (getline(file, line)) {
         stringstream ss(line);
         vector<string> tokens;
@@ -463,21 +518,27 @@ void HashTable<Student>::readFromFile(string filename) {
         int term = stoi(tokens[3]);
         float score = stof(tokens[4]);
 
-        if (lastID == id) {
-            if (lastTerm == term) {
-                vector<float> *scores = this->search(id)->data.getScores(term);
-                scores->push_back(score);
-                this->search(id)->data.update_grade(term);
-            }
-            else {
+        if (term == -1 && score == -1) {
+            Student stdnt(name, id, g);
+            this->insert(stdnt);
+        }
+        else {
+            if (lastID == id) {
+                if (lastTerm == term) {
+                    vector<float> *scores = this->search(id)->data.getScores(term);
+                    scores->push_back(score);
+                    this->search(id)->data.update_grade(term);
+                }
+                else {
+                    vector<float> scores = {score};
+                    this->search(id)->data.add_term_scores(term, scores);
+                }
+            } else {
+                Student student(name, id, g);
                 vector<float> scores = {score};
-                this->search(id)->data.add_term_scores(term, scores);
+                student.add_term_scores(term, scores);
+                this->insert(student);
             }
-        } else {
-            Student student(name, id, g);
-            vector<float> scores = {score};
-            student.add_term_scores(term, scores);
-            this->insert(student);
         }
 
         lastTerm = term;
@@ -495,6 +556,13 @@ void HashTable<Student>::clear() {
         table[i].clear();
     }
 }
+
+template <>
+void HashTable<Student>::remove(Node<Student> *node) {
+    unsigned index = hash(node->data.getID());
+    table[index].remove(node);
+}
+
 template <class T>
 void betterCin(string, T&, string, bool);
 
