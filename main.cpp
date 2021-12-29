@@ -161,12 +161,11 @@ struct Student {
     }
 
     vector<float> *getScores(int term) {
-        vector<float> null = vector<float>();
         if (term_scores.find(term) != term_scores.end()) {
             return &term_scores[term];
         }
         else {
-            return &null;
+            return nullptr;
         }
     }
 
@@ -715,7 +714,7 @@ int main() {
 
                             vector<float> *scores = node->data.getScores(term);
 
-                            if (scores->size() == 0) {
+                            if (scores == nullptr) {
                                 cout << Tcolors::RED << "Error: You have not taken any exam in this term." << Tcolors::RESET << endl;
                                 cout << endl;
                                 continue;
@@ -885,8 +884,8 @@ int main() {
 
                             vector<float> *scores = node->data.getScores(term);
 
-                            if (scores->size() == 0) {
-                                cout << Tcolors::RED << "Error: You have not taken any exam in this term." << Tcolors::RESET << endl;
+                            if (scores == nullptr) {
+                                cout << Tcolors::RED << "Error: The student have not taken any exam in this term." << Tcolors::RESET << endl;
                                 cout << endl;
                                 continue;
                             } else {
@@ -939,7 +938,7 @@ int main() {
                         }
                         else if (choiceT == 5) {
                             // Edit a student's score for a term
-                            cout << Tcolors::YELLOW << "Info: You have selected to remove a student's score for a term." << Tcolors::RESET << endl;
+                            cout << Tcolors::YELLOW << "Info: You have selected to edit a student's score for a term." << Tcolors::RESET << endl;
                             cout << endl;
 
                             string id;
@@ -954,8 +953,8 @@ int main() {
 
                             vector<float> *scores = node->data.getScores(term);
 
-                            if (scores->size() == 0) {
-                                cout << Tcolors::RED << "Error: You have not taken any exam in this term." << Tcolors::RESET << endl;
+                            if (scores == nullptr) {
+                                cout << Tcolors::RED << "Error: The student have not taken any exam in this term." << Tcolors::RESET << endl;
                                 cout << endl;
                                 continue;
                             }
