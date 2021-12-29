@@ -571,6 +571,7 @@ unsigned c_rand();
 
 void print_student_menu();
 void print_teacher_menu();
+void print_main_menu();
 
 
 int main() {
@@ -582,16 +583,10 @@ int main() {
     students.readFromFile("students.csv");
 
     cout << Tcolors::BOLDGREEN << "Welcome to the student management system!" << Tcolors::RESET << endl;
-    cout << "Please select an option:" << endl;
-    cout << "1. Login as a student" << endl;
-    cout << "2. Login as a teacher" << endl;
-    cout << "3. Register as a student" << endl;
-    cout << "4. Register as a teacher" << endl;
-    cout << "5. Show help again" << endl;
-    cout << "6. Exit" << endl;
-    cout << endl;
 
     while (choice != 6) {
+        print_main_menu();
+        cout << endl;
         betterCin("Please enter your choice: ", choice, "Invalid choice. Please try again.", false);
 
         if (choice == 1) {
@@ -660,11 +655,13 @@ int main() {
                     //Student features
                     // view informations : score, ....
 
-                    print_student_menu();
 
                     int choice2 = 0;
 
                     while (choice2 != 4) {
+                        print_student_menu();
+                        cout << endl;
+
                         betterCin("> Please enter your choice: ", choice2, "Invalid choice. Please try again.", false);
 
                         if (choice2 == 1) {
@@ -719,7 +716,7 @@ int main() {
                                 cout << endl;
                                 continue;
                             } else {
-                                cout << "Scores: ";
+                                cout << "Scores:\n";
                                 for (unsigned i = 0; i < scores->size(); i++) {
                                     cout << "Score " << i + 1 << ": " << scores->at(i) << endl;
                                 }
@@ -727,10 +724,6 @@ int main() {
                             }
                         }
                         else if (choice2 == 3) {
-                            cout << Tcolors::YELLOW << "Info: You have selected to view your average score for all terms." << Tcolors::RESET << endl;
-                            cout << endl;
-
-                            print_student_menu();
                             continue;
                         }
                         else if (choice2 == 4) {
@@ -811,10 +804,12 @@ int main() {
                     // Teacher features
                     // createa, read , update, delete
 
-                    print_teacher_menu();
                     int choiceT = 0;
 
                     while (choiceT != 12) {
+                        print_teacher_menu();
+                        cout << endl;
+
                         betterCin("# Please enter your choice: ", choiceT, "Invalid choice. Please try again.", false);
 
                         if (choiceT == 1) {
@@ -889,7 +884,7 @@ int main() {
                                 cout << endl;
                                 continue;
                             } else {
-                                cout << "Scores: ";
+                                cout << "Scores:\n";
                                 for (unsigned i = 0; i < scores->size(); i++) {
                                     cout << "Score " << i + 1 << ": " << scores->at(i) << endl;
                                 }
@@ -1049,10 +1044,6 @@ int main() {
                         }
                         else if (choiceT == 8) {
                             // Show teacher menu again
-                            cout << Tcolors::YELLOW << "Info: You have selected to show the teacher menu again." << Tcolors::RESET << endl;
-                            cout << endl;
-
-                            print_teacher_menu();
                             continue;
                         }
                         else if (choiceT == 9) {
@@ -1102,7 +1093,7 @@ int main() {
 
                             break;
                         }
-                        // TODO: add choice for viewing all students' information, and another choice for viewing all students' information sorted by GPA
+                        // TODO: another choice for viewing all students' information sorted by GPA
                         else {
                             cout << Tcolors::RED << "Error: Invalid choice. Please try again." << Tcolors::RESET << endl;
                             cout << endl;
@@ -1392,5 +1383,16 @@ void print_teacher_menu() {
     cout << "10. Export student information to a file" << endl;
     cout << "11. Show all students' information" << endl;
     cout << "12. Exit" << endl;
+    cout << endl;
+}
+
+void print_main_menu() {
+    cout << "Please select an option:" << endl;
+    cout << "1. Login as a student" << endl;
+    cout << "2. Login as a teacher" << endl;
+    cout << "3. Register as a student" << endl;
+    cout << "4. Register as a teacher" << endl;
+    cout << "5. Show help again" << endl;
+    cout << "6. Exit" << endl;
     cout << endl;
 }
