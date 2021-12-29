@@ -443,13 +443,15 @@ void HashTable<Student>::readFromFile(string filename) {
     string line;
     getline(file, line);
 
+    int lastTerm = numeric_limits<int>::min();
+    string lastID;
+    
     while (getline(file, line)) {
         stringstream ss(line);
         vector<string> tokens;
         string token;
 
-        int lastTerm = numeric_limits<int>::min();
-        string lastID;
+        
 
         while (getline(ss, token, ',')) {
             tokens.push_back(token);
@@ -460,7 +462,6 @@ void HashTable<Student>::readFromFile(string filename) {
         char g = *(tokens[2]).c_str();
         int term = stoi(tokens[3]);
         float score = stof(tokens[4]);
-        string grade = tokens[5];
 
         if (lastID == id) {
             if (lastTerm == term) {
