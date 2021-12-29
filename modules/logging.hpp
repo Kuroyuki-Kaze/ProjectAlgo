@@ -9,11 +9,11 @@ class Logging {
         std::string fmt;
         int level;
 
-        inline const static int __DEBUG = 0;
-        inline const static int __INFO = 1;
+        inline const static int __DEBUG = 4;
+        inline const static int __INFO = 3;
         inline const static int __WARN = 2;
-        inline const static int __ERROR = 3;
-        inline const static int __FATAL = 4;
+        inline const static int __ERROR = 1;
+        inline const static int __FATAL = 0;
 
         
 
@@ -27,7 +27,7 @@ class Logging {
             this->fmt = fmt;
         }
 
-        std::string format(std::string msg, std::string fmt) {
+        std::string format(std::string msg, std::string fmt, int level) {
             // replace %(lvl)s with the level in all caps, and %(msg)s with the message
             std::string formatted = fmt;
             std::string lvl;
@@ -47,6 +47,9 @@ class Logging {
                     break;
                 case __FATAL:
                     lvl = "FATAL";
+                    break;
+                default:
+                    lvl = "UNKNOWN";
                     break;
             }
 
@@ -70,61 +73,61 @@ class Logging {
 
         void debug(std::string msg) {
             if (level >= __DEBUG) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __DEBUG) << std::endl;
             }
         }
 
         void debug(std::string msg, std::string fmt) {
             if (level >= __DEBUG) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __DEBUG) << std::endl;
             }
         }
 
         void info(std::string msg) {
             if (level >= __INFO) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __INFO) << std::endl;
             }
         }
 
         void info(std::string msg, std::string fmt) {
             if (level >= __INFO) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __INFO) << std::endl;
             }
         }
 
         void warn(std::string msg) {
             if (level >= __WARN) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __WARN) << std::endl;
             }
         }
 
         void warn(std::string msg, std::string fmt) {
             if (level >= __WARN) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __WARN) << std::endl;
             }
         }
 
         void error(std::string msg) {
             if (level >= __ERROR) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __ERROR) << std::endl;
             }
         }
 
         void error(std::string msg, std::string fmt) {
             if (level >= __ERROR) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __ERROR) << std::endl;
             }
         }
 
         void fatal(std::string msg) {
             if (level >= __FATAL) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __FATAL) << std::endl;
             }
         }
 
         void fatal(std::string msg, std::string fmt) {
             if (level >= __FATAL) {
-                std::cout << format(msg, fmt) << std::endl;
+                std::cout << format(msg, fmt, __FATAL) << std::endl;
             }
         }
 
