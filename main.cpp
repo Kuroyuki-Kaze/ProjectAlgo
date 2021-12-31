@@ -4,6 +4,8 @@
 #include "modules/tcolors.hpp"
 #include "modules/logging.hpp"
 
+// what's a header? never heard of it.
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -26,6 +28,9 @@
 
 using namespace std;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+
 #pragma region PreMain
 Logging logger = Logging();
 string fmt = "[%(lvl)s]: %(msg)s";
@@ -39,11 +44,15 @@ void lsuccess(std::string msg, std::string __fmt) {
 }
 
 void lerror(std::string msg, std::string fmt) {
-    logger.info(msg, Tcolors::RED + fmt + Tcolors::RESET);
+    logger.error(msg, Tcolors::RED + fmt + Tcolors::RESET);
 }
 
 void lblinksuccess(std::string msg, std::string __fmt) {
     logger.info(msg, Tcolors::BLINKGREEN + __fmt + Tcolors::RESET);
+}
+
+void lwarn(std::string msg, std::string fmt) {
+    logger.warn(msg, Tcolors::BOLDYELLOW + fmt + Tcolors::RESET);
 }
 
 struct Student {
@@ -157,9 +166,9 @@ struct Student {
     }
 
     void print_data() {
-        cout << "Name: " << name << endl;
-        cout << "ID: " << id << endl;
-        cout << "Gender: " << g << endl;
+        cout << "Name:\t" << name << endl;
+        cout << "ID:\t" << id << endl;
+        cout << "Gender:\t" << g << endl;
         
         for (auto term: term_scores) {
             cout << "Term " << term.first << ":" << endl;
@@ -394,6 +403,20 @@ struct HashTable {
     Node<T>* search(string key);
     void print();
 
+    int getSize() {
+        return size;
+    }
+
+    int getEffectiveSize() {
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            if (table[i].head != nullptr) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     void writeToFile(string filename);
     void readFromFile(string filename);
     void clear();
@@ -459,7 +482,7 @@ void HashTable<Student>::print() {
             curr = curr->next;
         }
 
-        cout << "Index: " << i << endl;
+        logger.debug("Index: " + to_string(i));
     }
 }
 
@@ -594,6 +617,8 @@ void print_teacher_menu();
 void print_main_menu();
 #pragma endregion PreMain
 
+#pragma GCC diagnostic pop
+
 int main() {
     srand(time(NULL));
     unsigned choice;
@@ -608,7 +633,7 @@ int main() {
     students.readFromFile("students.csv");
     linfo("Data loaded successfully!", fmt);
     cout << endl;
-    system("cls");
+    system("pause");
 
     cout << Tcolors::BOLDGREEN << "Welcome to the student management system!" << Tcolors::RESET << endl;
     cout << endl;
@@ -616,7 +641,7 @@ int main() {
     while (choice != 6) {
         print_main_menu();
         cout << endl;
-        betterCin(Tcolors::BLINKBLUE + "Please enter your choice: " + Tcolors::RESET, choice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+        betterCin(Tcolors::BLINKCYAN + "Please enter your choice: " + Tcolors::RESET, choice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
 
         if (choice == 1) {
             string username, password;
@@ -839,6 +864,9 @@ int main() {
                         print_teacher_menu();
                         cout << endl;
 
+                        // print the size of the students list
+                        linfo("The number of students in the system is: " + to_string(students.getEffectiveSize()), fmt);
+
                         betterCin("# Please enter your choice: ", choiceT, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
 
                         if (choiceT == 1) {
@@ -871,7 +899,7 @@ int main() {
                             lsuccess("Successfully inserted student into the list.", "[SUCCESS]: %(msg)s");
                             cout << endl;
                         }
-                        else if (choiceT == 2) {
+                        else if (choiceT == 3) {
                             // View a student's information
                             linfo("You have selected to view a student's information.", fmt);
 
@@ -892,7 +920,7 @@ int main() {
                             
                             node->data.print_data();
                         }
-                        else if (choiceT == 3) {
+                        else if (choiceT == 4) {
                             // View a student's score for a specific term
                             linfo("You have selected to view a student's score for a specific term.", fmt);
                             cout << endl;
@@ -921,7 +949,7 @@ int main() {
                                 cout << endl;
                             }
                         }
-                        else if (choiceT == 4) {
+                        else if (choiceT == 2) {
                             // Add a student's score for a term
                             linfo("You have selected to add a student's score for a term.", fmt);
                             cout << endl;
@@ -946,7 +974,7 @@ int main() {
                                 cout << endl;
 
                                 if (score < 0 || score > 100) {
-                                    cout << Tcolors::RED << "Error: Invalid score. Please try again." << Tcolors::RESET << endl;
+                                    lerror("Invalid score.", fmt);
                                     cout << endl;
                                     fail = 1;
                                     break;
@@ -960,26 +988,28 @@ int main() {
                             }
 
                             node->data.add_term_scores(term, scores);
+
+                            lsuccess("Successfully added scores.", "[SUCCESS]: %(msg)s");
                         }
                         else if (choiceT == 5) {
                             // Edit a student's score for a term
-                            cout << Tcolors::YELLOW << "Info: You have selected to edit a student's score for a term." << Tcolors::RESET << endl;
+                            linfo("You have selected to edit a student's score for a term.", fmt);
                             cout << endl;
 
                             string id;
-                            betterCin("# Please enter the ID of the student: ", id, "Invalid ID. Please try again.", false);
+                            betterCin("# Please enter the ID of the student: ", id, Tcolors::RED + "Invalid ID. Please try again." + Tcolors::RESET, false);
                             cout << endl;
 
                             Node<Student>* node = students.search(id);
 
                             int term;
-                            betterCin("# Please enter the term you want to edit: ", term, "Invalid term. Please try again.", false);
+                            betterCin("# Please enter the term you want to edit: ", term, Tcolors::RED + "Invalid term. Please try again." + Tcolors::RESET, false);
                             cout << endl;
 
                             vector<float> *scores = node->data.getScores(term);
 
                             if (scores == nullptr) {
-                                cout << Tcolors::RED << "Error: The student have not taken any exam in this term." << Tcolors::RESET << endl;
+                                lerror("You have not taken any exams this term.", fmt);
                                 cout << endl;
                                 continue;
                             }
@@ -992,17 +1022,17 @@ int main() {
                             }
 
                             int how_many;
-                            betterCin("# Please enter how many scores you want to add: ", how_many, "Invalid number. Please try again.", false);
+                            betterCin("# Please enter how many scores you want to add: ", how_many, Tcolors::RED + "Invalid number. Please try again." + Tcolors::RESET, false);
                             cout << endl;
 
                             vector<float> scores_new;
                             for (int i = 0; i < how_many; i++) {
                                 float score;
-                                betterCin("# Please enter the score: ", score, "Invalid score. Please try again.", false);
+                                betterCin("# Please enter the score: ", score, Tcolors::RED + "Invalid score. Please try again." + Tcolors::RESET, false);
                                 cout << endl;
 
                                 if (score < 0 || score > 100) {
-                                    cout << Tcolors::RED << "Error: Invalid score. Please try again." << Tcolors::RESET << endl;
+                                    lerror("Invalid score.", fmt);
                                     cout << endl;
                                     continue;
                                 }
@@ -1014,17 +1044,17 @@ int main() {
                         }
                         else if (choiceT == 6) {
                             // Edit a student's information
-                            cout << Tcolors::YELLOW << "Info: You have selected to edit a student's information." << Tcolors::RESET << endl;
+                            linfo("You have selected to view a student's information.", fmt);
                             cout << endl;
 
                             string id;
-                            betterCin("# Please enter the ID of the student: ", id, "Invalid ID. Please try again.", false);
+                            betterCin("# Please enter the ID of the student: ", id, Tcolors::RED + "Invalid ID. Please try again." + Tcolors::RESET, false);
                             cout << endl;
 
                             Node<Student>* node = students.search(id);
 
                             if (node == nullptr) {
-                                cout << Tcolors::RED << "Error: Invalid ID." << Tcolors::RESET << endl;
+                                lerror("Could not find student with ID " + id, fmt);
                                 cout << endl;
                                 continue;
                             }
@@ -1039,12 +1069,12 @@ int main() {
                             string newID;
                             char newGender;
 
-                            betterCin("# Please enter the new name: ", newName, "Invalid name. Please try again.", false);
-                            betterCin("# Please enter the new ID: ", newID, "Invalid ID. Please try again.", false);
-                            betterCin("# Please enter the new Gender: ", newGender, "Invalid Gender. Please try again.", false);
+                            betterCin("# Please enter the new name: ", newName, Tcolors::RED + "Invalid name. Please try again." + Tcolors::RESET, false);
+                            betterCin("# Please enter the new ID: ", newID, Tcolors::RED + "Invalid ID. Please try again." + Tcolors::RESET, false);
+                            betterCin("# Please enter the new Gender: ", newGender, Tcolors::RED + "Invalid Gender. Please try again." + Tcolors::RESET, false);
 
                             if (newGender != 'M' && newGender != 'F') {
-                                cout << "Error: Invalid Gender." << endl;
+                                lerror("Invalid gender.", fmt);
                                 cout << endl;
                                 continue;
                             }
@@ -1055,17 +1085,17 @@ int main() {
                         }
                         else if (choiceT == 7) {
                             // Remove a student from the system
-                            cout << Tcolors::YELLOW << "Info: You have selected to remove a student from the system." << Tcolors::RESET << endl;
+                            linfo("You have selected to remove a student from the system.", fmt);
                             cout << endl;
 
                             string id;
-                            betterCin("# Please enter the ID of the student: ", id, "Invalid ID. Please try again.", false);
+                            betterCin("# Please enter the ID of the student: ", id, Tcolors::RED + "Invalid ID. Please try again." + Tcolors::RESET, false);
                             cout << endl;
 
                             Node<Student>* node = students.search(id);
 
                             if (node == nullptr) {
-                                cout << Tcolors::RED << "Error: Invalid ID." << Tcolors::RESET << endl;
+                                lerror("Could not find student with ID " + id, fmt);
                                 cout << endl;
                                 continue;
                             }
@@ -1078,7 +1108,7 @@ int main() {
                         }
                         else if (choiceT == 9) {
                             // Force reload the student list
-                            cout << Tcolors::YELLOW << "Info: You have selected to force reload the student list." << Tcolors::RESET << endl;
+                            linfo("You have selected to force reload the student list.", fmt);
                             cout << endl;
 
                             students.clear();
@@ -1086,24 +1116,24 @@ int main() {
                         }
                         else if (choiceT == 10) {
                             // Export the current list to a file
-                            cout << Tcolors::YELLOW << "Info: You have selected to export the current list to a file." << Tcolors::RESET << endl;
+                            linfo("You have selected to export the current list to a file.", fmt);
                             cout << endl;
                             
                             students.writeToFile("students.csv");
                         }
                         else if (choiceT == 11) {
                             // Print all students' information
-                            cout << Tcolors::YELLOW << "Info: You have selected to print all students' information." << Tcolors::RESET << endl;
+                            linfo("You have selected to print all students' information.", fmt);
                             cout << endl;
 
                             students.print();
                         }
                         else if (choiceT == 12) {
                             // Exit the teacher menu
-                            cout << Tcolors::YELLOW << "Info: You have selected to exit the teacher menu." << Tcolors::RESET << endl;
+                            linfo("You have selected to exit the teacher menu.", fmt);
                             cout << endl;
                             
-                            cout << Tcolors::BLINKRED << "Warning: You may have unsaved changes to the list, do you want to save the list? (Y/N): " << Tcolors::RESET << endl;
+                            lwarn("Warning: You may have unsaved changes to the list, do you want to save the list? (Y/{N | any other key}): ", fmt);
                             cout << endl;
 
                             char choiceSave;
@@ -1113,11 +1143,11 @@ int main() {
                                 students.writeToFile("students.csv");
                             }
                             else if (choiceSave == 'N' || choiceSave == 'n') {
-                                cout << Tcolors::YELLOW << "Info: You have selected to not save the list." << Tcolors::RESET << endl;
+                                linfo("You have selected to not save the list.", fmt);
                                 cout << endl;
                             }
                             else {
-                                cout << Tcolors::RED << "Error: Invalid choice." << Tcolors::RESET << endl;
+                                lerror("Invalid choice.", fmt);
                                 cout << endl;
                             }
 
@@ -1125,7 +1155,7 @@ int main() {
                         }
                         // TODO: another choice for viewing all students' information sorted by GPA
                         else {
-                            cout << Tcolors::RED << "Error: Invalid choice. Please try again." << Tcolors::RESET << endl;
+                            lerror("Invalid choice.", fmt);
                             cout << endl;
                             continue;
                         }
@@ -1134,7 +1164,7 @@ int main() {
                     continue;
                 }
                 else {
-                    cout << Tcolors::YELLOW << "Info: You have entered login information of a student." << Tcolors::RESET << endl;
+                    linfo("You have selected to exit the system.", fmt);
                     cout << endl;
 
                     continue;
@@ -1144,15 +1174,15 @@ int main() {
         else if (choice == 3) {
             string username, password, confPassword;
 
-            betterCin("Please enter your username: ", username, "Invalid username. Please try again.", false);
-            betterCin("Please enter your password: ", password, "Invalid password. Please try again.", true);
+            betterCin("Please enter your username: ", username, Tcolors::RED + "Invalid username. Please try again." + Tcolors::RESET, false);
+            betterCin("Please enter your password: ", password, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
             cout << endl;
 
-            betterCin("Please enter your password again: ", confPassword, "Invalid password. Please try again.", true);
+            betterCin("Please enter your password again: ", confPassword, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
             cout << endl;
 
             if (password != confPassword) {
-                cout << Tcolors::RED << "Error: Passwords do not match." << Tcolors::RESET << endl;
+                lerror("Passwords do not match.", fmt);
                 cout << endl;
                 continue;
             }
@@ -1163,7 +1193,7 @@ int main() {
             ifstream file("users.txt");
 
             if (!file.is_open()) {
-                cout << Tcolors::RED << "Error: Could not open file." << Tcolors::RESET << endl;
+                lerror("Could not open file.", fmt);
                 cout << endl;
                 continue;
             }
@@ -1186,7 +1216,7 @@ int main() {
             file.close();
 
             if (found) {
-                cout << Tcolors::RED << "Error: Username already exists." << Tcolors::RESET << endl;
+                lerror("Username already exists.", fmt);
                 continue;
             }
             else {
@@ -1201,7 +1231,7 @@ int main() {
                 ofstream ofile("users.txt", ios::app);
 
                 if (!ofile.is_open()) {
-                    cout << Tcolors::RED << "Error: Could not open file." << Tcolors::RESET << endl;
+                    lerror("Could not open file.", fmt);
                     cout << endl;
                     continue;
                 }
@@ -1210,7 +1240,7 @@ int main() {
 
                 ofile.close();
 
-                cout << Tcolors::BLINKGREEN << "Registration successful!" << Tcolors::RESET << endl;
+                lblinksuccess("Successfully created student user.", "[SUCCESS]: %(msg)s");
                 cout << endl;
                 continue;
             }
@@ -1219,15 +1249,15 @@ int main() {
             // register as teacher
             string username, password, confPassword;
 
-            betterCin("Please enter your username: ", username, "Invalid username. Please try again.", false);
-            betterCin("Please enter your password: ", password, "Invalid password. Please try again.", true);
+            betterCin("Please enter your username: ", username, Tcolors::RED + "Invalid username. Please try again." + Tcolors::RESET, false);
+            betterCin("Please enter your password: ", password, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
             cout << endl;
 
-            betterCin("Please enter your password again: ", confPassword, "Invalid password. Please try again.", true);
+            betterCin("Please enter your password again: ", confPassword, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
             cout << endl;
 
             if (password != confPassword) {
-                cout << Tcolors::RED << "Error: Passwords do not match." << Tcolors::RESET << endl;
+                lerror("Passwords do not match.", fmt);
                 cout << endl;
                 continue;
             }
@@ -1238,7 +1268,7 @@ int main() {
             ifstream file("users.txt");
 
             if (!file.is_open()) {
-                cout << Tcolors::RED << "Error: Could not open file." << Tcolors::RESET << endl;
+                lerror("Could not open file.", fmt);
                 cout << endl;
                 continue;
             }
@@ -1261,7 +1291,7 @@ int main() {
             file.close();
 
             if (found) {
-                cout << Tcolors::RED << "Error: Username already exists." << Tcolors::RESET << endl;
+                lerror("Username already exists.", fmt);
                 continue;
             }
             else {
@@ -1276,7 +1306,7 @@ int main() {
                 ofstream ofile("users.txt", ios::app);
 
                 if (!ofile.is_open()) {
-                    cout << Tcolors::RED << "Error: Could not open file." << Tcolors::RESET << endl;
+                    lerror("Could not open file.", fmt);
                     cout << endl;
                     continue;
                 }
@@ -1285,7 +1315,7 @@ int main() {
 
                 ofile.close();
 
-                cout << Tcolors::BLINKGREEN << "Registration successful!" << Tcolors::RESET << endl;
+                lblinksuccess("Successfully created teacher user.", "[SUCCESS]: %(msg)s");
                 cout << endl;
                 continue;
             }
@@ -1300,12 +1330,12 @@ int main() {
             cout << endl;
         }
         else if (choice == 6) {
-            cout << Tcolors::BLINKGREEN << "Goodbye!" << Tcolors::RESET << endl;
+            cout << Tcolors::GREEN << "Goodbye!" << Tcolors::RESET << endl;
             cout << endl;
             continue;
         }
         else {
-            cout << Tcolors::RED << "Error: Invalid choice. Please try again." << Tcolors::RESET << endl;
+            lerror("Invalid choice.", fmt);
             cout << endl;
             continue;
         }
@@ -1402,9 +1432,9 @@ void print_student_menu() {
 
 void print_teacher_menu() {
     cout << "1. Add a student into the system" << endl;
-    cout << "2. View a student information" << endl;
-    cout << "3. View a student's score for a specific term" << endl;
-    cout << "4. Add a student's score for a term" << endl;
+    cout << "2. Add a student's score for a term" << endl;
+    cout << "3. View a student information" << endl;
+    cout << "4. View a student's score for a specific term" << endl;
     cout << "5. Edit a student's score for a term" << endl;
     cout << "6. Edit a student's information" << endl;
     cout << "7. Remove a student from the system" << endl;
@@ -1417,7 +1447,7 @@ void print_teacher_menu() {
 }
 
 void print_main_menu() {
-    cout << "Please select an option:" << endl;
+    cout << Tcolors::BOLDCYAN + "Please select an option:" + Tcolors::RESET<< endl;
     cout << "1. Login as a student" << endl;
     cout << "2. Login as a teacher" << endl;
     cout << "3. Register as a student" << endl;
