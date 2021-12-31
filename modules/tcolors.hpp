@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+#ifndef TCOLORS_HPP
+#define TCOLORS_HPP
 class Tcolors {
     public:
     inline static const std::string BLACK = "\033[0;30m";
@@ -50,3 +52,5 @@ class Tcolors {
     inline static const std::string RESET = "\033[0m";
 
 };
+
+#endif
