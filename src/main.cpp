@@ -208,7 +208,7 @@ struct Student {
         
         // print data
         for (auto term : term_scores) {
-            cout << Tcolors::BOLDWHITE << "| " << setw(10) << term.first << " | " << setw(50) << vec_s(term.second) << " | " << setw(6) << term_grades[term.first] << " |" << endl;
+            cout << Tcolors::BOLDWHITE << "| " << setw(10) << term.first << " | " << setw(50) << std::left << vec_s(term.second) << std::right << " | " << setw(6) << term_grades[term.first] << " |" << endl;
         }
 
         cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-" << endl;
@@ -511,6 +511,7 @@ void HashTable<Student>::print() {
         Node<Student>* curr = table[i].head;
         while (curr != nullptr) {
             curr->data.print_data();
+            cout << "\n\n" << endl;
             curr = curr->next;
         }
 
@@ -675,6 +676,7 @@ int main() {
         print_main_menu();
         cout << endl;
         betterCin(Tcolors::BLINKCYAN + "Please enter your choice: " + Tcolors::RESET, choice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+        cout << endl;
 
         if (choice == 1) {
             string username, password;
@@ -750,6 +752,7 @@ int main() {
                         cout << endl;
 
                         betterCin(Tcolors::BLINKCYAN + "> Please enter your choice: " + Tcolors::RESET, choiceS, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                        cout << endl;
 
                         if (choiceS == 1) {
                             // view basic informations (name, id, ...)
@@ -902,7 +905,8 @@ int main() {
                         linfo("The number of students in the system is: " + to_string(students.getEffectiveSize()), fmt);
 
                         betterCin("# Please enter your choice: ", choiceT, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
-
+                        cout << endl;
+                        
                         if (choiceT == 1) {
                             // Add a student
                             linfo("You have selected to add a student.", fmt);
@@ -1364,8 +1368,7 @@ int main() {
                             cout << Tcolors::BLINKPURPLE << "Students list size: " << students.getEffectiveSize() << Tcolors::RESET << endl;
                             students.print();
                             cout << Tcolors::BLINKPURPLE << "Students list size: " << students.getEffectiveSize() << Tcolors::RESET << endl;
-                            cout << endl;
-
+                            cout << "\n" << endl;
                         }
                         else if (choiceT == 12) {
                             // Exit the teacher menu
