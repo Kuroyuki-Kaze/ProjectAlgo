@@ -811,6 +811,7 @@ int main() {
                             }
                         }
                         else if (choiceS == 3) {
+                            cout << endl;
                             continue;
                         }
                         else if (choiceS == 4) {
@@ -1315,6 +1316,7 @@ int main() {
                         }
                         else if (choiceT == 8) {
                             // Show teacher menu again
+                            cout << endl;
                             continue;
                         }
                         else if (choiceT == 9) {
@@ -1362,6 +1364,7 @@ int main() {
                             cout << Tcolors::BLINKPURPLE << "Students list size: " << students.getEffectiveSize() << Tcolors::RESET << endl;
                             students.print();
                             cout << Tcolors::BLINKPURPLE << "Students list size: " << students.getEffectiveSize() << Tcolors::RESET << endl;
+                            cout << endl;
 
                         }
                         else if (choiceT == 12) {
