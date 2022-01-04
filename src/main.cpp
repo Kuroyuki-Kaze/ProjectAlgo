@@ -657,7 +657,7 @@ int main() {
     unsigned choice;
     HashTable<Student> students(1000);
 
-    int level = Logging::__INFO;
+    int level = Logging::__WARN;
     logger.configure(level, fmt);
 
     linfo("Starting program...", fmt);
@@ -906,7 +906,7 @@ int main() {
 
                         betterCin("# Please enter your choice: ", choiceT, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
                         cout << endl;
-                        
+                            
                         if (choiceT == 1) {
                             // Add a student
                             linfo("You have selected to add a student.", fmt);
@@ -954,6 +954,7 @@ int main() {
                                 }
 
                                 betterCin("Do you want to add another student? (y/{n | any other key}): ", repeatChoice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                                cout << endl;
 
                                 if (repeatChoice == 'y') {
                                     continue;
@@ -986,6 +987,7 @@ int main() {
                                 }
 
                                 betterCin("Do you want to view another student's information? (y/{n | any other key}): ", repeatChoice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                                cout << endl;
 
                                 if (repeatChoice == 'y') {
                                     continue;
@@ -1008,25 +1010,31 @@ int main() {
 
                                 Node<Student>* node = students.search(id);
 
-                                int term;
-                                betterCin("# Please enter the term you want to view: ", term, Tcolors::RED + "Invalid term. Please try again." + Tcolors::RESET, false);
-                                cout << endl;
-
-                                vector<float> *scores = node->data.getScores(term);
-
-                                if (scores == nullptr) {
+                                if (node == nullptr) {
                                     lerror("Could not find student with ID " + id, fmt);
                                     cout << endl;
                                 } else {
-                                    cout << "Scores:\n";
-                                    for (unsigned i = 0; i < scores->size(); i++) {
-                                        cout << "Score " << i + 1 << ": " << scores->at(i) << endl;
-                                    }
+                                    int term;
+                                    betterCin("# Please enter the term you want to view: ", term, Tcolors::RED + "Invalid term. Please try again." + Tcolors::RESET, false);
                                     cout << endl;
+
+                                    vector<float> *scores = node->data.getScores(term);
+
+                                    if (scores == nullptr) {
+                                        lerror("Could not find student with ID " + id, fmt);
+                                        cout << endl;
+                                    } else {
+                                        cout << "Scores:\n";
+                                        for (unsigned i = 0; i < scores->size(); i++) {
+                                            cout << "Score " << i + 1 << ": " << scores->at(i) << endl;
+                                        }
+                                        cout << endl;
+                                    }
                                 }
 
                                 betterCin("Do you want to view another student's score? (y/{n | any other key}): ", repeatChoice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
-                                
+                                cout << endl;
+
                                 if (repeatChoice == 'y') {
                                     continue;
                                 }
@@ -1049,52 +1057,60 @@ int main() {
                                 cout << endl;
 
                                 Node<Student>* node = students.search(id);
-                                int term = node->data.term_scores.size() + 1;
 
-                                int how_many;
-                                betterCin("# Please enter the number of scores you want to add: ", how_many, Tcolors::RED + "Invalid number. Please try again." + Tcolors::RESET, false);
-                                cout << endl;
+                                if (node == nullptr) {
+                                    lerror("Could not find student with ID " + id, fmt);
+                                    cout << endl;
+                                    fail = 1;
+                                } else {
+                                    int term = node->data.term_scores.size() + 1;
 
-                                vector<float> scores;
-                                for (int i = 0; i < how_many; i++) {
-                                    float score;
-                                    betterCin("# Please enter the score: ", score, Tcolors::RED + "Invalid score. Please try again." + Tcolors::RESET, false);
+                                    int how_many;
+                                    betterCin("# Please enter the number of scores you want to add: ", how_many, Tcolors::RED + "Invalid number. Please try again." + Tcolors::RESET, false);
                                     cout << endl;
 
-                                    if (score < 0 || score > 100) {
-                                        lerror("Invalid score.", fmt);
+                                    vector<float> scores;
+                                    for (int i = 0; i < how_many; i++) {
+                                        float score;
+                                        betterCin("# Please enter the score: ", score, Tcolors::RED + "Invalid score. Please try again." + Tcolors::RESET, false);
                                         cout << endl;
-                                        fail = 1;
-                                        break;
+
+                                        if (score < 0 || score > 100) {
+                                            lerror("Invalid score.", fmt);
+                                            cout << endl;
+                                            fail = 1;
+                                            break;
+                                        }
+
+                                        scores.push_back(score);
                                     }
 
-                                    scores.push_back(score);
-                                }
-
-                                if (!fail) {
-                                    char confirm;
-                                    cout << "ID: " << id << endl;
-                                    cout << "Term: " << term << endl;
-                                    cout << "Scores: ";
-                                    for (unsigned i = 0; i < scores.size(); i++) {
-                                        cout << scores.at(i) << ", ";
-                                    }
-                                    cout << endl;
-
-                                    betterCin("Are you sure that you want to add this score? (y/{n | any other key}): ", confirm, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
-
-                                    if (confirm == 'y') {
-                                        node->data.add_term_scores(term, scores);
-                                        lsuccess("Successfully added score.", "[SUCCESS]: %(msg)s");
+                                    if (!fail) {
+                                        char confirm;
+                                        cout << "ID: " << id << endl;
+                                        cout << "Term: " << term << endl;
+                                        cout << "Scores: ";
+                                        for (unsigned i = 0; i < scores.size(); i++) {
+                                            cout << scores.at(i) << ", ";
+                                        }
                                         cout << endl;
-                                    }
-                                    else {
-                                        linfo("Score addition has been dropped.", fmt);
-                                        cout << endl;
+
+                                        betterCin("Are you sure that you want to add this score? (y/{n | any other key}): ", confirm, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+
+                                        if (confirm == 'y') {
+                                            node->data.add_term_scores(term, scores);
+                                            lsuccess("Successfully added score.", "[SUCCESS]: %(msg)s");
+                                            cout << endl;
+                                        }
+                                        else {
+                                            linfo("Score addition has been dropped.", fmt);
+                                            cout << endl;
+                                        }
                                     }
                                 }
 
                                 betterCin("Do you want to add another score? (y/{n | any other key}): ", repeatChoice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                                cout << endl;
 
                                 if (repeatChoice == 'y') {
                                     continue;
@@ -1118,86 +1134,93 @@ int main() {
 
                                 Node<Student>* node = students.search(id);
 
-                                int term;
-                                betterCin("# Please enter the term you want to edit: ", term, Tcolors::RED + "Invalid term. Please try again." + Tcolors::RESET, false);
-                                cout << endl;
-
-                                if (term < 1) {
-                                    lerror("Invalid term.", fmt);
+                                if (node == nullptr) {
+                                    lerror("Could not find student with ID " + id, fmt);
                                     cout << endl;
-                                }
-                                else {
+                                    fail = true;
+                                } else {
+                                    int term;
+                                    betterCin("# Please enter the term you want to edit: ", term, Tcolors::RED + "Invalid term. Please try again." + Tcolors::RESET, false);
+                                    cout << endl;
 
-                                    vector<float> *scores = node->data.getScores(term);
-
-                                    if (scores == nullptr) {
-                                        lerror("You have not taken any exams this term.", fmt);
+                                    if (term < 1) {
+                                        lerror("Invalid term.", fmt);
                                         cout << endl;
                                     }
                                     else {
-                                        cout << "Term: " << term << endl;
-                                        cout << "Scores: ";
-                                        for (unsigned i = 0; i < scores->size(); i++) {
-                                            cout << "Score " << i + 1 << ": " << scores->at(i) << endl;
-                                        }
-                                        cout << endl;
 
-                                        char conf;
-                                        betterCin("Are you sure that you want to edit this score? (y/{n | any other key}): ", conf, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                                        vector<float> *scores = node->data.getScores(term);
 
-                                        if (conf == 'y') {
-
-                                            int how_many;
-                                            betterCin("# Please enter how many scores you want to add: ", how_many, Tcolors::RED + "Invalid number. Please try again." + Tcolors::RESET, false);
+                                        if (scores == nullptr) {
+                                            lerror("You have not taken any exams this term.", fmt);
                                             cout << endl;
-
-                                            vector<float> scores_new;
-                                            for (int i = 0; i < how_many; i++) {
-                                                float score;
-                                                betterCin("# Please enter the score: ", score, Tcolors::RED + "Invalid score. Please try again." + Tcolors::RESET, false);
-                                                cout << endl;
-
-                                                if (score < 0 || score > 100) {
-                                                    lerror("Invalid score.", fmt);
-                                                    fail = true;
-                                                    cout << endl;
-                                                    break;
-                                                } else {
-                                                    scores_new.push_back(score);
-                                                }
-                                            }
-
-                                            if (!fail) {
-                                                char confirm;
-                                                cout << "ID: " << id << endl;
-                                                cout << "Term: " << term << endl;
-                                                cout << "Scores: ";
-                                                for (unsigned i = 0; i < scores_new.size(); i++) {
-                                                    cout << scores_new.at(i) << ", ";
-                                                }
-                                                cout << endl;
-
-                                                betterCin("Are you sure that you want to add this score? (y/{n | any other key}): ", confirm, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
-
-                                                if (confirm == 'y') {
-                                                    node->data.edit_term_scores(term, scores_new);
-                                                    lsuccess("Successfully edited score.", "[SUCCESS]: %(msg)s");
-                                                    cout << endl;
-                                                }
-                                                else {
-                                                    linfo("Score editing has been dropped.", fmt);
-                                                    cout << endl;
-                                                }
-                                            }
                                         }
                                         else {
-                                            linfo("Score editing has been dropped.", fmt);
+                                            cout << "Term: " << term << endl;
+                                            cout << "Scores: ";
+                                            for (unsigned i = 0; i < scores->size(); i++) {
+                                                cout << "Score " << i + 1 << ": " << scores->at(i) << endl;
+                                            }
                                             cout << endl;
+
+                                            char conf;
+                                            betterCin("Are you sure that you want to edit this score? (y/{n | any other key}): ", conf, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+
+                                            if (conf == 'y') {
+
+                                                int how_many;
+                                                betterCin("# Please enter how many scores you want to add: ", how_many, Tcolors::RED + "Invalid number. Please try again." + Tcolors::RESET, false);
+                                                cout << endl;
+
+                                                vector<float> scores_new;
+                                                for (int i = 0; i < how_many; i++) {
+                                                    float score;
+                                                    betterCin("# Please enter the score: ", score, Tcolors::RED + "Invalid score. Please try again." + Tcolors::RESET, false);
+                                                    cout << endl;
+
+                                                    if (score < 0 || score > 100) {
+                                                        lerror("Invalid score.", fmt);
+                                                        fail = true;
+                                                        cout << endl;
+                                                        break;
+                                                    } else {
+                                                        scores_new.push_back(score);
+                                                    }
+                                                }
+
+                                                if (!fail) {
+                                                    char confirm;
+                                                    cout << "ID: " << id << endl;
+                                                    cout << "Term: " << term << endl;
+                                                    cout << "Scores: ";
+                                                    for (unsigned i = 0; i < scores_new.size(); i++) {
+                                                        cout << scores_new.at(i) << ", ";
+                                                    }
+                                                    cout << endl;
+
+                                                    betterCin("Are you sure that you want to add this score? (y/{n | any other key}): ", confirm, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+
+                                                    if (confirm == 'y') {
+                                                        node->data.edit_term_scores(term, scores_new);
+                                                        lsuccess("Successfully edited score.", "[SUCCESS]: %(msg)s");
+                                                        cout << endl;
+                                                    }
+                                                    else {
+                                                        linfo("Score editing has been dropped.", fmt);
+                                                        cout << endl;
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                linfo("Score editing has been dropped.", fmt);
+                                                cout << endl;
+                                            }
                                         }
                                     }
                                 }
 
                                 betterCin("Do you want to edit another score? (y/{n | any other key}): ", repeatChoice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                                cout << endl;
 
                                 if (repeatChoice == 'y') {
                                     continue;
@@ -1262,6 +1285,7 @@ int main() {
                                 }
 
                                 betterCin("Do you want to edit another student's information? (y/{n | any other key}): ", repeatChoice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                                cout << endl;
 
                                 if (repeatChoice == 'y') {
                                     continue;
@@ -1309,7 +1333,8 @@ int main() {
                                 }
 
                                 betterCin("Do you want to remove another student? (y/{n | any other key}): ", repeatChoice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
-                                
+                                cout << endl;
+
                                 if (repeatChoice == 'y') {
                                     continue;
                                 }
@@ -1374,13 +1399,11 @@ int main() {
                             // Exit the teacher menu
                             linfo("You have selected to exit the teacher menu.", fmt);
                             cout << endl;
-                            
-                            lwarn("Warning: You may have unsaved changes to the list, do you want to save the list? (Y/N): ", fmt);
-                            cout << endl;
 
                             char choiceSave;
-                            cin >> choiceSave;
-
+                            betterCin(Tcolors::YELLOW + "Warning: You may have unsaved changes to the list, do you want to save the list? (Y/N): " + Tcolors::RESET, choiceSave, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
+                            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                            
                             if (choiceSave == 'Y' || choiceSave == 'y') {
                                 students.writeToFile("students.csv");
 
@@ -1444,6 +1467,11 @@ int main() {
             if (!file.is_open()) {
                 lerror("Could not open file.", fmt);
                 cout << endl;
+                linfo("Creating new file...", fmt);
+
+                ofstream ofile("users.txt");
+                ofile.close();
+
                 continue;
             }
 
@@ -1482,6 +1510,12 @@ int main() {
                 if (!ofile.is_open()) {
                     lerror("Could not open file.", fmt);
                     cout << endl;
+
+                    linfo("Creating new file...", fmt);
+
+                    ofstream ofile("users.txt");
+                    ofile.close();
+
                     continue;
                 }
 
@@ -1672,36 +1706,36 @@ unsigned c_rand() {
 #endif
 
 void print_student_menu() {
-    cout << "1. View basic information" << endl;
-    cout << "2. View score for a specific term" << endl;
-    cout << "3. Show the student menu again" << endl;
-    cout << "4. Exit" << endl;
+    cout << Tcolors::YELLOW << "1. " << Tcolors::RESET << "View basic information" << endl;
+    cout << Tcolors::YELLOW << "2. " << Tcolors::RESET << "View score for a specific term" << endl;
+    cout << Tcolors::YELLOW << "3. " << Tcolors::RESET << "Show the student menu again" << endl;
+    cout << Tcolors::YELLOW << "4. " << Tcolors::RESET << "Exit" << endl;
     cout << endl;
 }
 
 void print_teacher_menu() {
-    cout << "1. Add a student into the system" << endl;
-    cout << "2. Add a student's score for a term" << endl;
-    cout << "3. View a student information" << endl;
-    cout << "4. View a student's score for a specific term" << endl;
-    cout << "5. Edit a student's score for a term" << endl;
-    cout << "6. Edit a student's information" << endl;
-    cout << "7. Remove a student from the system" << endl;
-    cout << "8. Show the teacher menu again" << endl;
-    cout << "9. Import student information from a file" << endl;
-    cout << "10. Export student information to a file" << endl;
-    cout << "11. Show all students' information" << endl;
-    cout << "12. Exit" << endl;
+    cout << Tcolors::YELLOW << "1. " << Tcolors::RESET << "Add a student into the system" << endl;
+    cout << Tcolors::YELLOW << "2. " << Tcolors::RESET << "Add a student's score for a term" << endl;
+    cout << Tcolors::YELLOW << "3. " << Tcolors::RESET << "View a student information" << endl;
+    cout << Tcolors::YELLOW << "4. " << Tcolors::RESET << "View a student's score for a specific term" << endl;
+    cout << Tcolors::YELLOW << "5. " << Tcolors::RESET << "Edit a student's score for a term" << endl;
+    cout << Tcolors::YELLOW << "6. " << Tcolors::RESET << "Edit a student's information" << endl;
+    cout << Tcolors::YELLOW << "7. " << Tcolors::RESET << "Remove a student from the system" << endl;
+    cout << Tcolors::YELLOW << "8. " << Tcolors::RESET << "Show the teacher menu again" << endl;
+    cout << Tcolors::YELLOW << "9. " << Tcolors::RESET << "Import student information from a file" << endl;
+    cout << Tcolors::YELLOW << "10. " << Tcolors::RESET << "Export student information to a file" << endl;
+    cout << Tcolors::YELLOW << "11. " << Tcolors::RESET << "Show all students' information" << endl;
+    cout << Tcolors::YELLOW << "12. " << Tcolors::RESET << "Exit" << endl;
     cout << endl;
 }
 
 void print_main_menu() {
     cout << Tcolors::BOLDCYAN + "Please select an option:" + Tcolors::RESET<< endl;
-    cout << "1. Login as a student" << endl;
-    cout << "2. Login as a teacher" << endl;
-    cout << "3. Register as a student" << endl;
-    cout << "4. Register as a teacher" << endl;
-    cout << "5. Show help again" << endl;
-    cout << "6. Exit" << endl;
+    cout << Tcolors::YELLOW + "1. " << Tcolors::RESET << "Login as a student" << endl;
+    cout << Tcolors::YELLOW + "2. " << Tcolors::RESET << "Login as a teacher" << endl;
+    cout << Tcolors::YELLOW + "3. " << Tcolors::RESET << "Register as a student" << endl;
+    cout << Tcolors::YELLOW + "4. " << Tcolors::RESET << "Register as a teacher" << endl;
+    cout << Tcolors::YELLOW + "5. " << Tcolors::RESET << "Show help again" << endl;
+    cout << Tcolors::YELLOW + "6. " << Tcolors::RESET << "Exit" << endl;
     cout << endl;
 }
