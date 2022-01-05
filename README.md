@@ -15,6 +15,8 @@ allows the user to add, view, modify, and delete the students in the system.
 
 **Note 2**: This project comes with example student and users data.
 
+**Note 3**: The program might not work proper on OS X, due to the use of `fflush` on `stdin.`
+
 How to build the program
 ------------------------
 To build the program/project, you need to have `make` or `mingw32-make` installed.
