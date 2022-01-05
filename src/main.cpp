@@ -196,22 +196,22 @@ struct Student {
         // +-+-+-+-+-+-+-+-+
 
         // print header
-        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-" << endl;
-        cout << Tcolors::BOLDWHITE << "| " << setw(40) << "Name" << " | " << setw(20) << "ID" << " | " << setw(6) << "Gender" << " |" << endl;
-        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-" << endl;
+        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+" << endl;
+        cout << Tcolors::BOLDWHITE << "| " << setw(40) << "Name" << " | " << setw(20) << "ID" << " | " << setw(6) << "Gender" << " | " << setw(6) << "GPA" << " |" << endl;
+        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+" << endl;
 
-        cout << Tcolors::BOLDWHITE << "| " << setw(40) << this->name << " | " << setw(20) << this->id << " | " << setw(6) << this->g << " |" << endl;
-        cout << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-" << endl;
+        cout << Tcolors::BOLDWHITE << "| " << setw(40) << this->name << " | " << setw(20) << this->id << " | " << setw(6) << this->g << " | " << setw(6) << cut_off(std::to_string(this->getGPA()), 2) << " |" << endl;
+        cout << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+" << endl;
 
-        cout << Tcolors::BOLDWHITE << "| " << setw(10) << "Term" << " | " << setw(50) << "Scores (comma separated)" << " | " << setw(6) << "Grade" << " |" << endl;
-        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-" << endl;
+        cout << Tcolors::BOLDWHITE << "| " << setw(10) << "Term" << " | " << setw(50) << "Scores (comma separated)" << " | " << setw(15) << "Grade" << " |" << endl;
+        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+" << endl;
         
         // print data
         for (auto term : term_scores) {
-            cout << Tcolors::BOLDWHITE << "| " << setw(10) << term.first << " | " << setw(50) << std::left << vec_s(term.second) << std::right << " | " << setw(6) << term_grades[term.first] << " |" << endl;
+            cout << Tcolors::BOLDWHITE << "| " << setw(10) << term.first << " | " << setw(50) << std::left << vec_s(term.second) << std::right << " | " << setw(15) << term_grades[term.first] << " |" << endl;
         }
 
-        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-" << endl;
+        cout << Tcolors::RESET << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+" << endl;
         cout << endl;
     }
 
