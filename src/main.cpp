@@ -28,6 +28,8 @@
 
 using namespace std;
 
+#define flushstdin cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 
@@ -681,12 +683,24 @@ int main() {
         cout << endl;
         betterCin(Tcolors::BLINKCYAN + "Please enter your choice: " + Tcolors::RESET, choice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
         cout << endl;
+        flushstdin;
+        fflush(stdin);
 
         if (choice == 1) {
             string username, password;
 
-            betterCin(Tcolors::CYAN + "Please enter your username: " + Tcolors::RESET, username, Tcolors::RED +  "Invalid username. Please try again." + Tcolors::RESET, false);
-            betterCin(Tcolors::CYAN + "Please enter your password: " + Tcolors::RESET, password, Tcolors::RED +  "Invalid password. Please try again." + Tcolors::RESET, true);
+            cout << Tcolors::CYAN + "Please enter your username: " + Tcolors::RESET;
+            getline(cin, username);
+            //flushstdin;
+            fflush(stdin);
+
+            cout << Tcolors::CYAN + "Please enter your password: " + Tcolors::RESET;
+            disableEcho();
+            getline(cin, password);
+            enableEcho();
+            //flushstdin;
+            fflush(stdin);
+
             cout << endl;
 
             bool found = false;
@@ -842,8 +856,17 @@ int main() {
             // login as teacher
             string username, password;
 
-            betterCin(Tcolors::CYAN + "Please enter your username: " + Tcolors::RESET, username, Tcolors::RED + "Invalid username. Please try again." + Tcolors::RESET, false);
-            betterCin(Tcolors::CYAN + "Please enter your password: " + Tcolors::RESET, password, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
+            cout << Tcolors::CYAN + "Please enter your username: " + Tcolors::RESET;
+            getline(cin, username);
+            //flushstdin;
+            fflush(stdin);
+
+            cout << Tcolors::CYAN + "Please enter your password: " + Tcolors::RESET;
+            disableEcho();
+            getline(cin, password);
+            enableEcho();
+            fflush(stdin);
+
             cout << endl;
 
             bool found = false;
@@ -1449,13 +1472,35 @@ int main() {
         }
         else if (choice == 3) {
             string username, password, confPassword;
+            linfo("You have selected to create a new student account.", fmt);
 
-            betterCin("Please enter your username: ", username, Tcolors::RED + "Invalid username. Please try again." + Tcolors::RESET, false);
-            betterCin("Please enter your password: ", password, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
+            cout << Tcolors::CYAN + "Please enter your username: " + Tcolors::RESET;
+            getline(cin, username);
+            //flushstdin;
+            fflush(stdin);
+
+            cout << Tcolors::CYAN + "Please enter your password: " + Tcolors::RESET;
+            disableEcho();
+            getline(cin, password);
+            enableEcho();
+            cout << endl;
+            //flushstdin;
+            fflush(stdin);
+
+            cout << Tcolors::CYAN + "Please enter your password again: " + Tcolors::RESET;
+            disableEcho();
+            getline(cin, confPassword);
+            enableEcho();
+            //flushstdin;
+            fflush(stdin);
+
             cout << endl;
 
-            betterCin("Please enter your password again: ", confPassword, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
-            cout << endl;
+            if (username.empty() || password.empty() || confPassword.empty() || *(username.c_str()) == '\n' || *(password.c_str()) == '\n' || *(confPassword.c_str()) == '\n') {
+                lerror("Empty username or password.", fmt);
+                cout << endl;
+                continue;
+            }
 
             if (password != confPassword) {
                 lerror("Passwords do not match.", fmt);
@@ -1535,13 +1580,35 @@ int main() {
         else if (choice == 4) {
             // register as teacher
             string username, password, confPassword;
+            linfo("You have selected to create a new teacher account.", fmt);
+            
+            cout << Tcolors::CYAN + "Please enter your username: " + Tcolors::RESET;
+            getline(cin, username);
+            //flushstdin;
+            fflush(stdin);
 
-            betterCin("Please enter your username: ", username, Tcolors::RED + "Invalid username. Please try again." + Tcolors::RESET, false);
-            betterCin("Please enter your password: ", password, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
+            cout << Tcolors::CYAN + "Please enter your password: " + Tcolors::RESET;
+            disableEcho();
+            getline(cin, password);
+            enableEcho();
+            cout << endl;
+            //flushstdin;
+            fflush(stdin);
+
+            cout << Tcolors::CYAN + "Please enter your password again: " + Tcolors::RESET;
+            disableEcho();
+            getline(cin, confPassword);
+            enableEcho();
+            //flushstdin;
+            fflush(stdin);
+            
             cout << endl;
 
-            betterCin("Please enter your password again: ", confPassword, Tcolors::RED + "Invalid password. Please try again." + Tcolors::RESET, true);
-            cout << endl;
+            if (username.empty() || password.empty() || confPassword.empty() || *(username.c_str()) == '\n' || *(password.c_str()) == '\n' || *(confPassword.c_str()) == '\n') {
+                lerror("Empty username or password.", fmt);
+                cout << endl;
+                continue;
+            }
 
             if (password != confPassword) {
                 lerror("Passwords do not match.", fmt);
