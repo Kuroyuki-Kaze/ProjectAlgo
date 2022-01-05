@@ -666,7 +666,11 @@ int main() {
     students.readFromFile("students.csv");
     linfo("Data loaded successfully!", fmt);
     cout << endl;
-    system("pause");
+
+    if (level >= Logging::__INFO) {
+        system("pause");
+    }
+    
     system("cls");
 
     cout << Tcolors::BOLDGREEN << "Welcome to the student management system!" << Tcolors::RESET << endl;
