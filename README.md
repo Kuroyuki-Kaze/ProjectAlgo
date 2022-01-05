@@ -11,6 +11,10 @@ Description
 This project is a student management system created in C++ that
 allows the user to add, view, modify, and delete the students in the system.
 
+**Note**: This project is not complete.
+
+**Note 2**: This project comes with example student and users data.
+
 How to build the program
 ------------------------
 To build the program/project, you need to have `make` or `mingw32-make` installed.
