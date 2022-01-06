@@ -5,6 +5,14 @@ BDIR=./bin
 CPPC=g++
 CPPFLAGS=-Wall -Wextra -std=c++17
 
+if [ ! -d $ODIR ]; then
+	mkdir $ODIR
+fi
+
+if [ ! -d $BDIR ]; then
+	mkdir $BDIR
+fi
+
 output: $(ODIR)/main.o $(ODIR)/secrets.o
 	$(CPPC) $(CPPFLAGS) $(ODIR)/main.o $(ODIR)/secrets.o -o $(BDIR)/main 
 
