@@ -29,7 +29,12 @@ choco install make
 
 or you can install `mingw32-make` by getting MinGW toolchain from [MSYS2](https://www.msys2.org/).
 
-After you install `make` or `mingw32-make`, you can run the following command in the root directory of the project to build the program:
+After you install `make` or `mingw32-make`, you can run the following command in the root directory of the project to first prepare the project:
+```
+make prepare
+```
+
+and then build the project using:
 ```
 make
 ```
