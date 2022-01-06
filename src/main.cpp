@@ -949,6 +949,7 @@ int main() {
 
                                 char gender;
                                 betterCin("# Please enter the gender of the student: ", gender, Tcolors::RED + "Invalid gender. Please try again." + Tcolors::RESET, false);
+                                fflush(stdin);
                                 cout << endl;
 
                                 if (gender != 'M' && gender != 'F') {
@@ -1284,7 +1285,8 @@ int main() {
 
                                     betterCin("# Please enter the new name: ", newName, Tcolors::RED + "Invalid name. Please try again." + Tcolors::RESET, false);
                                     betterCin("# Please enter the new Gender: ", newGender, Tcolors::RED + "Invalid Gender. Please try again." + Tcolors::RESET, false);
-
+                                    fflush(stdin);
+                                    
                                     if (newGender != 'M' && newGender != 'F') {
                                         lerror("Invalid gender.", fmt);
                                         cout << endl;
