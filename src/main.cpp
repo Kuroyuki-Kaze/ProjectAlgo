@@ -683,7 +683,7 @@ int main() {
         cout << endl;
         betterCin(Tcolors::BLINKCYAN + "Please enter your choice: " + Tcolors::RESET, choice, Tcolors::RED + "Invalid choice. Please try again." + Tcolors::RESET, false);
         cout << endl;
-        flushstdin;
+        //flushstdin;
         fflush(stdin);
 
         if (choice == 1) {
@@ -729,7 +729,6 @@ int main() {
                     digest = hash.substr(hash.find(".") + 1);
 
                     if (digest == SHA256(password + salt + "isTeacher")) {
-                        found = true;
                         isTeacher = true;
                         break;
                     }
@@ -900,7 +899,6 @@ int main() {
                         break;
                     }
                     else if (digest == SHA256(password + salt)) {
-                        found = true;
                         isTeacher = false;
                         break;
                     }
