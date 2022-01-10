@@ -13,7 +13,7 @@ allows the user to add, view, modify, and delete the students in the system.
 
 **Note**: This project is not complete.
 
-**Note 2**: The program might not work proper on OS X, due to the use of `fflush` on `stdin.`
+**Note 2**: The program might not work proper on OS X, due to the use of `fflush` on `stdin`.
 
 How to build the program
 ------------------------
