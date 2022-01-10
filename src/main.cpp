@@ -650,6 +650,15 @@ unsigned c_rand();
 void print_student_menu();
 void print_teacher_menu();
 void print_main_menu();
+
+void load_menu_sequence();
+
+void compause(unsigned);
+
+void clear_line(unsigned);
+
+unsigned crand(unsigned, unsigned);
+
 #pragma endregion PreMain
 
 #pragma GCC diagnostic pop
@@ -668,10 +677,16 @@ int main() {
     students.readFromFile("students.csv");
     linfo("Data loaded successfully!", fmt);
     cout << endl;
+    linfo("Loading menu sequence...", fmt);
+    Sleep(700);
+    linfo("Loading menu sequence complete.", fmt);
+    cout << endl;
 
     if (level >= Logging::__INFO) {
         system("pause");
     }
+
+    load_menu_sequence();
     
     system("cls");
 
@@ -1696,6 +1711,239 @@ int main() {
     }
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+#pragma region PostMain
+
+void compause(unsigned millis) {
+    #ifdef _WIN32
+        Sleep(millis);
+    #else
+        sleep(millis * 1000);
+    #endif
+}
+
+void clear_line() {
+    cout << "\033[1A\033[2K";
+}
+
+unsigned center(std::string msg) {
+    unsigned width = 0;
+    #ifdef _WIN32
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    #else
+        struct winsize w;
+        ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+        width = w.ws_col;
+    #endif
+    unsigned center = (width - msg.length()) / 2;
+    return center;
+}
+
+unsigned crand(unsigned min, unsigned max) {
+    #ifdef _WIN32
+        unsigned r, v;
+        rand_s(&r);
+        v = (unsigned)((double) r / (double) UINT_MAX * (max - min + 1)) + min;
+        return v;
+    #else
+        return (unsigned)((double) rand() / (double) RAND_MAX * (max - min + 1)) + min;
+    #endif
+}
+
+void load_menu_sequence() {
+    system("cls");
+    cout << Tcolors::BLINKGREEN << "Loading..." << Tcolors::RESET << "\n";
+    compause(2000);
+
+    cout << setw(center("00000000000000000000")) << "░░░░░░░░░░░░░░░░░░░░" << "\n";
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█░░░░░░░░░░░░░░░░░░░" << "\n";
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██░░░░░░░░░░░░░░░░░░" << "\n";
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████░░░░░░░░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████░░░░░░░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████░░░░░░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████░░░░░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████████░░░░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████████░░░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████████░░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████████░░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████████████░░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████████████░░░░░░░" << endl;
+    compause(crand(20, 500));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████████████░░░░░░" << endl;
+    compause(3000);
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████████████░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████████████░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████████░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████████░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████████░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████████░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████░░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████░░░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███░░░░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██░░░░░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+    clear_line();
+    clear_line();
+
+    cout << Tcolors::BLINKGREEN + "Loading...    :)" + Tcolors::RESET << endl;
+
+    cout << setw(center("00000000000000000000")) << "███░░░░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████░░░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████░░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████░░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████░░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████████░░░░░░░░░░░░" << endl;
+    compause(crand(10, 70));
+    clear_line();
+
+
+    cout << setw(center("00000000000000000000")) << "█████████░░░░░░░░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████████░░░░░░░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████████░░░░░░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████████████░░░░░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████████████░░░░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████████████░░░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████████████░░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "████████████████░░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "█████████████████░░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "██████████████████░░" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << setw(center("00000000000000000000")) << "███████████████████" << endl;
+    compause(crand(20, 100));
+    clear_line();
+
+    cout << endl;
+    cout << "Loading complete..." << endl;
+
+    compause(2000);
+
+    system("cls");
+}
+
 template <class T>
 void betterCin(string __Prompt, T& __Return_Buffer, string __Error_Message, bool __Hidden) {
     cout << __Prompt;
@@ -1810,3 +2058,5 @@ void print_main_menu() {
     cout << Tcolors::YELLOW + "6. " << Tcolors::RESET << "Exit" << endl;
     cout << endl;
 }
+
+#pragma endregion
